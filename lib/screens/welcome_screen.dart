@@ -4,6 +4,7 @@ import 'package:android_id/android_id.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movie_night_app/screens/enter_code_screen.dart';
 import 'package:flutter_movie_night_app/screens/share_code_screen.dart';
 import 'package:flutter_movie_night_app/utils/app_state.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,6 @@ class WelcomeScreen extends StatefulWidget {
 class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _initializeDeviceId();
   }
@@ -44,8 +44,33 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       builder: (context) => ShareCodeScreen(),
                     ));
               },
-              child: Text('Start Session'),
-            )
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.start),
+                  SizedBox(width: 8.0),
+                  Text('Start Session'),
+                ],
+              ),
+            ),
+            Text("Choose an option to begin"),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => EnterCodeScreen(),
+                    ));
+              },
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.code),
+                  SizedBox(width: 8.0),
+                  Text('Join Session'),
+                ],
+              ),
+            ),
           ],
         ),
       ),

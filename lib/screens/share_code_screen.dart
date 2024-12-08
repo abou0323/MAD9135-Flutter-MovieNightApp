@@ -12,7 +12,7 @@ class ShareCodeScreen extends StatefulWidget {
 }
 
 class _ShareCodeScreenState extends State<ShareCodeScreen> {
-  String code = "Unset";
+  String? code;
 
   @override
   void initState() {
@@ -23,19 +23,25 @@ class _ShareCodeScreenState extends State<ShareCodeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            'Share Code',
-            style: TextStyle(color: Colors.white),
-          ),
-          backgroundColor: Colors.blue,
+      appBar: AppBar(
+        title: Text(
+          'Share Code',
+          style: TextStyle(color: Colors.white),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text('Code: $code')],
-          ),
-        ));
+        backgroundColor: Colors.blue,
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (code == null)
+              CircularProgressIndicator()
+            else
+              Text('Code: $code')
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> _startSession() async {
@@ -51,5 +57,11 @@ class _ShareCodeScreenState extends State<ShareCodeScreen> {
     setState(() {
       code = response['data']['code'];
     });
+    if (kDebugMode) {
+      print("Session ID:");
+      print(response['data']['session_id']);
+    }
+    Provider.of<AppState>(context, listen: false)
+        .setSessionId(response['data']['session_id']);
   }
 }
