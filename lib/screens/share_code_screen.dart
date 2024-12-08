@@ -26,18 +26,18 @@ class _ShareCodeScreenState extends State<ShareCodeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Share Code',
         ),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   if (code == null)
-                    CircularProgressIndicator()
+                    const CircularProgressIndicator()
                   else
                     Text(
                       '$code',
@@ -50,7 +50,7 @@ class _ShareCodeScreenState extends State<ShareCodeScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => MovieSelectionScreen(),
+                            builder: (context) => const MovieSelectionScreen(),
                           ));
                     },
                     child: const Row(
@@ -86,6 +86,7 @@ class _ShareCodeScreenState extends State<ShareCodeScreen> {
       print("Session ID:");
       print(response['data']['session_id']);
     }
+    if (!mounted) return;
     Provider.of<AppState>(context, listen: false)
         .setSessionId(response['data']['session_id']);
   }

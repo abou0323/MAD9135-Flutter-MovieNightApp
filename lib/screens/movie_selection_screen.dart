@@ -1,11 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_movie_night_app/screens/welcome_screen.dart';
 import 'package:flutter_movie_night_app/utils/app_state.dart';
 import 'package:flutter_movie_night_app/utils/http_helper.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 class MovieSelectionScreen extends StatefulWidget {
@@ -36,10 +33,10 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Movies'),
+        title: const Text('Movies'),
       ),
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : (Dismissible(
               key: Key(movies[currentIndex].id.toString()),
               onDismissed: (direction) async {
@@ -69,78 +66,71 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
                   }
                 });
               },
-              background: Container(
-                child: Center(
-                    child: const Icon(
-                  Icons.thumb_up,
-                  size: 75,
-                )),
-              ),
-              secondaryBackground: Container(
-                child: const Icon(
+              background: const Center(
+                  child: Icon(
+                Icons.thumb_up,
+                size: 75,
+              )),
+              secondaryBackground: const Center(
+                child: Icon(
                   Icons.thumb_down,
                   size: 75,
                 ),
               ),
               child: Center(
-                child: Container(
-                  width: 400,
-                  child: Card(
-                    margin: EdgeInsets.all(32),
-                    color: Theme.of(context).colorScheme.onPrimary,
-                    elevation: 5.0,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(8.0),
-                            topRight: Radius.circular(8.0),
-                          ),
-                          child: movies[currentIndex].posterPath == null
-                              ? Image.asset(
-                                  'assets/images/film-reel.png',
-                                  width: 400,
-                                  height: 400,
-                                  fit: BoxFit.cover,
-                                )
-                              : Image.network(
-                                  '$imageBaseUrl${movies[currentIndex].posterPath}',
-                                  width: 400,
-                                  height: 400,
-                                  fit: BoxFit.cover,
-                                ),
+                child: Card(
+                  margin: const EdgeInsets.all(32),
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  elevation: 5.0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(8.0),
+                          topRight: Radius.circular(8.0),
                         ),
-                        ListTile(
-                          leading: Container(
-                            padding: EdgeInsets.all(8.0),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.secondary,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Text(
-                                movies[currentIndex]
-                                    .voteAverage
-                                    .toStringAsFixed(1),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(fontWeight: FontWeight.bold)),
+                        child: movies[currentIndex].posterPath == null
+                            ? Image.asset(
+                                'assets/images/film-reel.png',
+                                width: 400,
+                                height: 400,
+                                fit: BoxFit.cover,
+                              )
+                            : Image.network(
+                                '$imageBaseUrl${movies[currentIndex].posterPath}',
+                                width: 400,
+                                height: 400,
+                                fit: BoxFit.cover,
+                              ),
+                      ),
+                      ListTile(
+                        leading: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary,
+                            shape: BoxShape.circle,
                           ),
-                          title: Text(
-                            movies[currentIndex].title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleLarge
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          subtitle: Text(
-                              'Released: ${movies[currentIndex].releaseDate}'),
+                          child: Text(
+                              movies[currentIndex]
+                                  .voteAverage
+                                  .toStringAsFixed(1),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold)),
                         ),
-                      ],
-                    ),
+                        title: Text(
+                          movies[currentIndex].title,
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        subtitle: Text(
+                            'Released: ${movies[currentIndex].releaseDate}'),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -176,9 +166,10 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
       print(response);
     }
 
-    final response_match = response['data']['match'];
+    final responseMatch = response['data']['match'];
+    final responseDevices = response['data']['num_devices'];
 
-    if (response_match == true) {
+    if (responseMatch == true && responseDevices > 1) {
       setState(() {
         matchingMovieId = response['data']['movie_id'];
         match = true;
@@ -217,7 +208,7 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
                         height: 400,
                         fit: BoxFit.cover,
                       ),
-                SizedBox(height: 16.0),
+                const SizedBox(height: 16.0),
                 Text("${movies[currentIndex - 1].title} was a match",
                     style: Theme.of(context)
                         .textTheme
@@ -233,7 +224,7 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => WelcomeScreen(),
+                      builder: (context) => const WelcomeScreen(),
                     ));
               },
             ),

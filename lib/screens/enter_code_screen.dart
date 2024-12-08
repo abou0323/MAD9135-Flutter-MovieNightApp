@@ -15,13 +15,13 @@ class EnterCodeScreen extends StatefulWidget {
 class _EnterCodeScreenState extends State<EnterCodeScreen> {
   final GlobalKey<FormState> _formStateKey = GlobalKey<FormState>();
   final MyData _data = MyData();
-  String success = 'false';
+  bool success = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           'Enter Code',
         ),
       ),
@@ -35,7 +35,7 @@ class _EnterCodeScreenState extends State<EnterCodeScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 TextFormField(
-                  // autofocus: true,
+                  autofocus: true,
                   decoration: const InputDecoration(
                     hintText: '1234',
                     labelText: 'Enter the code from your friend',
@@ -61,15 +61,18 @@ class _EnterCodeScreenState extends State<EnterCodeScreen> {
 
                         await _joinSession();
 
-                        if (success == 'true') {
+                        if (success == true && context.mounted) {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => MovieSelectionScreen(),
+                                builder: (context) =>
+                                    const MovieSelectionScreen(),
                               ));
                         } else {
+                          if (!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Failed to join session")),
+                            const SnackBar(
+                                content: Text("Failed to join session")),
                           );
                         }
                       }
@@ -98,24 +101,22 @@ class _EnterCodeScreenState extends State<EnterCodeScreen> {
       print('Device id from Enter Code Screen: $deviceId');
     }
 
-    try {
-      final response = await HttpHelper.joinSession(deviceId, code);
+    final response = await HttpHelper.joinSession(deviceId, code);
 
-      if (kDebugMode) {
-        print(response['data']['session_id']);
-      }
-      if (kDebugMode) {
-        print("Session ID:");
-        print(response['data']['session_id']);
-      }
-      setState(() {
-        success = 'true';
-      });
-      Provider.of<AppState>(context, listen: false)
-          .setSessionId(response['data']['session_id']);
-    } catch (error) {
-      print(error);
+    if (kDebugMode) {
+      print(response['data']['session_id']);
     }
+    if (kDebugMode) {
+      print("Session ID:");
+      print(response['data']['session_id']);
+    }
+    setState(() {
+      success = true;
+    });
+
+    if (!mounted) return;
+    Provider.of<AppState>(context, listen: false)
+        .setSessionId(response['data']['session_id']);
   }
 }
 

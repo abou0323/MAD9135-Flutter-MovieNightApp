@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 
 class HttpHelper {
   static String movieNightBaseUrl = 'https://movie-night-api.onrender.com';
-  static String tmdb_BaseUrl = 'https://api.themoviedb.org/3/movie/popular';
+  static String tmdbBaseUrl = 'https://api.themoviedb.org/3/movie/popular';
 
   static startSession(String? deviceId) async {
     var response = await http
@@ -28,7 +28,7 @@ class HttpHelper {
     final apiKey = dotenv.env['TMDB_API_KEY'];
 
     final response =
-        await http.get(Uri.parse('$tmdb_BaseUrl?api_key=$apiKey&page=$page'));
+        await http.get(Uri.parse('$tmdbBaseUrl?api_key=$apiKey&page=$page'));
     if (response.statusCode == HttpStatus.ok) {
       List jsonResponse = json.decode(response.body)['results'];
       return jsonResponse.map((data) => Movie.fromJson(data)).toList();

@@ -29,7 +29,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Movie Night'),
+        title: const Text('Movie Night'),
       ),
       body: Center(
         child: Column(
@@ -40,7 +40,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ShareCodeScreen(),
+                      builder: (context) => const ShareCodeScreen(),
                     ));
               },
               child: const Row(
@@ -59,7 +59,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => EnterCodeScreen(),
+                      builder: (context) => const EnterCodeScreen(),
                     ));
               },
               child: const Row(
@@ -79,6 +79,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Future<void> _initializeDeviceId() async {
     String deviceId = await _fetchDeviceId();
+    if (!mounted) return;
     Provider.of<AppState>(context, listen: false).setDeviceId(deviceId);
   }
 
