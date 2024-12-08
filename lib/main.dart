@@ -39,7 +39,7 @@ class MainApp extends StatelessWidget {
           headlineLarge: TextStyle(fontSize: 32), // used
           headlineMedium: TextStyle(fontSize: 28),
           headlineSmall: TextStyle(fontSize: 24), // used
-          titleLarge: TextStyle(fontSize: 22),
+          titleLarge: TextStyle(fontSize: 22), // used
           titleMedium: TextStyle(fontSize: 16), // used
           titleSmall: TextStyle(fontSize: 14),
           bodyLarge: TextStyle(fontSize: 16),

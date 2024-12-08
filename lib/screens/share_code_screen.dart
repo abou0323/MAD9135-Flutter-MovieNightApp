@@ -13,6 +13,7 @@ class ShareCodeScreen extends StatefulWidget {
 }
 
 class _ShareCodeScreenState extends State<ShareCodeScreen> {
+  bool isLoading = true;
   String? code;
 
   @override
@@ -29,39 +30,41 @@ class _ShareCodeScreenState extends State<ShareCodeScreen> {
           'Share Code',
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            if (code == null)
-              CircularProgressIndicator()
-            else
-              Text(
-                '$code',
-                style: Theme.of(context).textTheme.headlineLarge,
-              ),
-            Text("Share the code with your friend",
-                style: Theme.of(context).textTheme.titleMedium),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MovieSelectionScreen(),
-                    ));
-              },
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
+      body: isLoading
+          ? Center(child: CircularProgressIndicator())
+          : Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Icon(Icons.start),
-                  SizedBox(width: 8.0),
-                  Text('Begin'),
+                  if (code == null)
+                    CircularProgressIndicator()
+                  else
+                    Text(
+                      '$code',
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                  Text("Share the code with your friend",
+                      style: Theme.of(context).textTheme.titleMedium),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MovieSelectionScreen(),
+                          ));
+                    },
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.start),
+                        SizedBox(width: 8.0),
+                        Text('Begin'),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -76,6 +79,7 @@ class _ShareCodeScreenState extends State<ShareCodeScreen> {
       print(response['data']['code']);
     }
     setState(() {
+      isLoading = false;
       code = response['data']['code'];
     });
     if (kDebugMode) {

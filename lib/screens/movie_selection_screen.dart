@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movie_night_app/screens/welcome_screen.dart';
 import 'package:flutter_movie_night_app/utils/app_state.dart';
 import 'package:flutter_movie_night_app/utils/http_helper.dart';
 import 'package:http/http.dart' as http;
@@ -57,6 +58,7 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
                     if (kDebugMode) {
                       print("show dialog");
                     }
+                    _showDialog();
                   }
                 }
                 setState(() {
@@ -95,12 +97,19 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
                             topLeft: Radius.circular(8.0),
                             topRight: Radius.circular(8.0),
                           ),
-                          child: Image.network(
-                            '$imageBaseUrl${movies[currentIndex].posterPath}',
-                            width: 400,
-                            height: 400,
-                            fit: BoxFit.cover,
-                          ),
+                          child: movies[currentIndex].posterPath == null
+                              ? Image.asset(
+                                  'assets/images/film-reel.png',
+                                  width: 400,
+                                  height: 400,
+                                  fit: BoxFit.cover,
+                                )
+                              : Image.network(
+                                  '$imageBaseUrl${movies[currentIndex].posterPath}',
+                                  width: 400,
+                                  height: 400,
+                                  fit: BoxFit.cover,
+                                ),
                         ),
                         ListTile(
                           leading: Container(
@@ -175,5 +184,62 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
         match = true;
       });
     }
+  }
+
+  Future<void> _showDialog() async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Align(
+            alignment: Alignment.center,
+            child: Text(
+              'Winner!',
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                movies[currentIndex - 1].posterPath == null
+                    ? Image.asset(
+                        'assets/images/film-reel.png',
+                        width: 400,
+                        height: 400,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.network(
+                        '$imageBaseUrl${movies[currentIndex - 1].posterPath}',
+                        width: 400,
+                        height: 400,
+                        fit: BoxFit.cover,
+                      ),
+                SizedBox(height: 16.0),
+                Text("${movies[currentIndex - 1].title} was a match",
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(fontWeight: FontWeight.bold)),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Okay'),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => WelcomeScreen(),
+                    ));
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
