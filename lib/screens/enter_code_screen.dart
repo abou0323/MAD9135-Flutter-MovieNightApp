@@ -23,11 +23,9 @@ class _EnterCodeScreenState extends State<EnterCodeScreen> {
       appBar: AppBar(
         title: Text(
           'Enter Code',
-          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.blue,
       ),
-      body: SingleChildScrollView(
+      body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
@@ -36,22 +34,15 @@ class _EnterCodeScreenState extends State<EnterCodeScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Enter Code:',
-                  // style: Theme.of(context)
-                  //     .textTheme
-                  //     .titleLarge
-                  //     ?.copyWith(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 16.0),
                 TextFormField(
-                  autofocus: true,
+                  // autofocus: true,
                   decoration: const InputDecoration(
                     hintText: '1234',
-                    labelText: 'Code',
+                    labelText: 'Enter the code from your friend',
                   ),
                   keyboardType: TextInputType.number,
                   maxLength: 4,
+                  style: Theme.of(context).textTheme.headlineLarge,
                   onSaved: (value) {
                     _data.code = value!;
                   },

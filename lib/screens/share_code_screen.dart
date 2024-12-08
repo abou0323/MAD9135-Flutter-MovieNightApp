@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movie_night_app/screens/movie_selection_screen.dart';
 import 'package:flutter_movie_night_app/utils/app_state.dart';
 import 'package:flutter_movie_night_app/utils/http_helper.dart';
 import 'package:provider/provider.dart';
@@ -26,18 +27,38 @@ class _ShareCodeScreenState extends State<ShareCodeScreen> {
       appBar: AppBar(
         title: Text(
           'Share Code',
-          style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             if (code == null)
               CircularProgressIndicator()
             else
-              Text('Code: $code')
+              Text(
+                '$code',
+                style: Theme.of(context).textTheme.headlineLarge,
+              ),
+            Text("Share the code with your friend",
+                style: Theme.of(context).textTheme.titleMedium),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => MovieSelectionScreen(),
+                    ));
+              },
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.start),
+                  SizedBox(width: 8.0),
+                  Text('Begin'),
+                ],
+              ),
+            ),
           ],
         ),
       ),

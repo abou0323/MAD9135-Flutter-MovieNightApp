@@ -30,11 +30,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Movie Night'),
-        backgroundColor: Colors.blue,
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
               onPressed: () {
@@ -53,7 +52,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                 ],
               ),
             ),
-            Text("Choose an option to begin"),
+            Text("Choose an option to begin",
+                style: Theme.of(context).textTheme.titleMedium),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
