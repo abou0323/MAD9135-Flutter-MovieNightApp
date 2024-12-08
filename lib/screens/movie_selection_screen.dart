@@ -44,11 +44,64 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
                   }
                 });
               },
-              child: Stack(
-                children: [
-                  Image.network('$imageBaseUrl${movies[0].posterPath}'),
-                  Text('${movies[0].title}'),
-                ],
+              background: Container(
+                child: Center(
+                    child: const Icon(
+                  Icons.thumb_up,
+                  size: 75,
+                )),
+              ),
+              secondaryBackground: Container(
+                child: const Icon(
+                  Icons.thumb_down,
+                  size: 75,
+                ),
+              ),
+              child: Center(
+                child: Card(
+                  margin: EdgeInsets.all(32),
+                  color: Theme.of(context).colorScheme.onPrimary,
+                  elevation: 5.0,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8.0),
+                          topRight: Radius.circular(8.0),
+                        ),
+                        child: Image.network(
+                          '$imageBaseUrl${movies[0].posterPath}',
+                          width: 350,
+                          height: 450,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      ListTile(
+                        leading: Container(
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Text(movies[0].voteAverage.toStringAsFixed(1),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(fontWeight: FontWeight.bold)),
+                        ),
+                        title: Text(
+                          movies[0].title,
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                        subtitle: Text('Released: ${movies[0].releaseDate}'),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             )),
     );
