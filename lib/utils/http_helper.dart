@@ -36,6 +36,16 @@ class HttpHelper {
       throw Exception('Failed to load data');
     }
   }
+
+  static voteForMovie(String? sessionId, movieId, vote) async {
+    var response = await http.get(Uri.parse(
+        '$movieNightBaseUrl/vote-movie?session_id=$sessionId&movie_id=$movieId&vote=$vote'));
+    if (response.statusCode == HttpStatus.ok) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to cast vote');
+    }
+  }
 }
 
 class Movie {

@@ -2,8 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_movie_night_app/utils/app_state.dart';
 import 'package:flutter_movie_night_app/utils/http_helper.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class MovieSelectionScreen extends StatefulWidget {
   const MovieSelectionScreen({super.key});
@@ -18,6 +20,10 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
   List movies = [];
   bool isLoading = true;
   int page = 1;
+  int currentIndex = 0;
+
+  String? matchingMovieId;
+  bool match = false;
 
   @override
   void initState() {
@@ -34,11 +40,28 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : (Dismissible(
-              key: Key(movies[0].id.toString()),
-              onDismissed: (direction) {
+              key: Key(movies[currentIndex].id.toString()),
+              onDismissed: (direction) async {
+                if (direction == DismissDirection.endToStart) {
+                  // dislike; vote = false
+                  var movieId = movies[currentIndex].id.toString();
+                  var vote = 'false';
+                  await _voteForMovie(movieId, vote);
+                } else if (direction == DismissDirection.startToEnd) {
+                  // like; vote = true
+                  var movieId = movies[currentIndex].id.toString();
+                  var vote = 'true';
+                  await _voteForMovie(movieId, vote);
+
+                  if (match == true) {
+                    if (kDebugMode) {
+                      print("show dialog");
+                    }
+                  }
+                }
                 setState(() {
-                  movies.removeAt(0);
-                  if (movies.length == 1) {
+                  movies[currentIndex++];
+                  if (currentIndex == movies.length - 1) {
                     page++;
                     _fetchMovies();
                   }
@@ -58,48 +81,57 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
                 ),
               ),
               child: Center(
-                child: Card(
-                  margin: EdgeInsets.all(32),
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  elevation: 5.0,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8.0),
-                          topRight: Radius.circular(8.0),
-                        ),
-                        child: Image.network(
-                          '$imageBaseUrl${movies[0].posterPath}',
-                          width: 350,
-                          height: 450,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      ListTile(
-                        leading: Container(
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.secondary,
-                            shape: BoxShape.circle,
+                child: Container(
+                  width: 400,
+                  child: Card(
+                    margin: EdgeInsets.all(32),
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    elevation: 5.0,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(8.0),
+                            topRight: Radius.circular(8.0),
                           ),
-                          child: Text(movies[0].voteAverage.toStringAsFixed(1),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall
-                                  ?.copyWith(fontWeight: FontWeight.bold)),
+                          child: Image.network(
+                            '$imageBaseUrl${movies[currentIndex].posterPath}',
+                            width: 400,
+                            height: 400,
+                            fit: BoxFit.cover,
+                          ),
                         ),
-                        title: Text(
-                          movies[0].title,
-                          style:
-                              Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                        ListTile(
+                          leading: Container(
+                            padding: EdgeInsets.all(8.0),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).colorScheme.secondary,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Text(
+                                movies[currentIndex]
+                                    .voteAverage
+                                    .toStringAsFixed(1),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headlineSmall
+                                    ?.copyWith(fontWeight: FontWeight.bold)),
+                          ),
+                          title: Text(
+                            movies[currentIndex].title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleLarge
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                          subtitle: Text(
+                              'Released: ${movies[currentIndex].releaseDate}'),
                         ),
-                        subtitle: Text('Released: ${movies[0].releaseDate}'),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -123,6 +155,25 @@ class _MovieSelectionScreenState extends State<MovieSelectionScreen> {
         print(error);
       }
       isLoading = false;
+    }
+  }
+
+  Future<void> _voteForMovie(movieId, vote) async {
+    String? sessionId = Provider.of<AppState>(context, listen: false).sessionId;
+
+    final response = await HttpHelper.voteForMovie(sessionId, movieId, vote);
+
+    if (kDebugMode) {
+      print(response);
+    }
+
+    final response_match = response['data']['match'];
+
+    if (response_match == true) {
+      setState(() {
+        matchingMovieId = response['data']['movie_id'];
+        match = true;
+      });
     }
   }
 }
