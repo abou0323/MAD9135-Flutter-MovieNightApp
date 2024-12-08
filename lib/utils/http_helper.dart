@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class HttpHelper {
   static String movieNightBaseUrl = 'https://movie-night-api.onrender.com';
+  static String tmdb_BaseUrl = 'https://api.themoviedb.org/3/movie/popular';
 
   static startSession(String? deviceId) async {
     var response = await http
@@ -19,5 +21,45 @@ class HttpHelper {
     } else {
       throw Exception('Failed to Join Session');
     }
+  }
+
+  static Future<List<Movie>> fetchMovies(page) async {
+    await dotenv.load(fileName: '.env');
+    final apiKey = dotenv.env['TMDB_API_KEY'];
+
+    final response =
+        await http.get(Uri.parse('$tmdb_BaseUrl?api_key=$apiKey&page=$page'));
+    if (response.statusCode == HttpStatus.ok) {
+      List jsonResponse = json.decode(response.body)['results'];
+      return jsonResponse.map((data) => Movie.fromJson(data)).toList();
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+}
+
+class Movie {
+  final int id;
+  final String title;
+  final String posterPath;
+  final String releaseDate;
+  final double voteAverage;
+
+  Movie({
+    required this.id,
+    required this.title,
+    required this.posterPath,
+    required this.releaseDate,
+    required this.voteAverage,
+  });
+
+  factory Movie.fromJson(Map<String, dynamic> data) {
+    return Movie(
+      id: data['id'],
+      title: data['original_title'],
+      posterPath: data['poster_path'],
+      releaseDate: data['release_date'],
+      voteAverage: data['vote_average'],
+    );
   }
 }
