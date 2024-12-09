@@ -1,3 +1,6 @@
-# flutter_movie_night_app
+# Movie Night App
 
-A new Flutter project.
+Movie Night!
+This app meant to help friends choose a movie to watch together.
+
+To run this application, add your TMDB API key to your .env file, as shown in the example.
